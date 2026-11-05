@@ -83,20 +83,31 @@
     .sec-head h2 { font-size: clamp(24px, 3vw, 32px); }
     .sec-head p { color: var(--muted); margin: 0; max-width: 54ch; }
 
-    /* timeline (experience + education) */
-    .timeline { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); }
-    .entry { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 24px; padding: 24px 28px; border-bottom: 1px solid var(--line); }
-    .entry:last-child { border-bottom: 0; }
-    .when { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
-    .when b { display: block; color: var(--ink); font-weight: 600; font-size: 14px; }
-    .entry h3 { font-size: 18px; }
-    .entry .org { font-size: 15px; color: var(--accent); font-weight: 500; margin-top: 2px; }
-    .entry .org span { color: var(--muted); font-weight: 400; }
-    .entry ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
-    .entry li { margin-bottom: 4px; }
-    .entry li b { color: var(--ink); font-weight: 600; }
-    .entry p { margin: 8px 0 0; color: var(--muted); font-size: 15px; }
-    .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); margin-bottom: 8px; }
+    /* vertical timeline (experience + education) */
+    .tl { position: relative; padding-left: 34px; }
+    .tl::before { content: ""; position: absolute; left: 11px; top: 8px; bottom: 8px; width: 2px; background: var(--line); }
+    .tl-item { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 14px; transition: border-color .15s; }
+    .tl-item:last-child { margin-bottom: 0; }
+    .tl-item:hover, .tl-item[open] { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+    .tl-item summary { list-style: none; cursor: pointer; display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; }
+    .tl-item summary::-webkit-details-marker { display: none; }
+    .tl-item summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+    .tl-dot { position: absolute; left: -30px; top: 22px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 3px solid var(--accent); }
+    .tl-item[open] .tl-dot { background: var(--accent); }
+    .tl-head { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .tl-date { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .tl-head h3 { font-size: 18px; }
+    .tl-head .org { font-size: 15px; color: var(--accent); font-weight: 500; }
+    .tl-head .org span { color: var(--muted); font-weight: 400; }
+    .tl-head .badge { align-self: flex-start; margin: 4px 0 2px; }
+    .tl-chev { flex: none; width: 10px; height: 10px; margin-top: 8px; border-right: 2px solid var(--faint); border-bottom: 2px solid var(--faint); transform: rotate(45deg); transition: transform .2s; }
+    .tl-item[open] .tl-chev { transform: rotate(-135deg); margin-top: 12px; }
+    .tl-body { padding: 0 22px 20px; margin-left: 0; border-top: 1px solid var(--line); padding-top: 14px; }
+    .tl-body ul { margin: 0; padding-left: 18px; color: var(--muted); font-size: 15px; }
+    .tl-body li { margin-bottom: 5px; }
+    .tl-body li b { color: var(--ink); font-weight: 600; }
+    .tl-body p { margin: 0; color: var(--muted); font-size: 15px; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
 
     /* skills */
     .skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -156,7 +167,11 @@
     @media (max-width: 760px) {
       .hero-grid { grid-template-columns: 1fr; gap: 24px; }
       .portrait { order: -1; width: 128px; height: 128px; }
-      .entry { grid-template-columns: 1fr; gap: 6px; padding: 20px; }
+      .tl { padding-left: 26px; }
+      .tl::before { left: 7px; }
+      .tl-dot { left: -26px; }
+      .tl-item summary { padding: 16px 16px; }
+      .tl-body { padding: 12px 16px 16px; }
       .projects, .skills, .two { grid-template-columns: 1fr; }
       .nav-links a.hide-sm { display: none; }
       .brand .role { display: none; }
@@ -185,9 +200,10 @@
     <div class="wrap">
       <a class="brand" href="#top"><img class="mark" src="assets/img/billriz-condor-sm.webp" alt="" width="34" height="34"><span class="name">Billriz Condor<span class="role">Energy &amp; Environment Engineer</span></span></a>
       <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#skills" class="hide-sm">Skills</a>
         <a href="#experience">Experience</a>
         <a href="#education" class="hide-sm">Education</a>
-        <a href="#projects">Projects</a>
         <a href="#contact" class="hide-sm">Contact</a>
         <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">◐</button>
       </div>
@@ -208,8 +224,8 @@
           <a href="https://github.com/billrizecondor" target="_blank" rel="noopener">⌥ github.com/billrizecondor</a>
         </div>
         <div class="cta">
-          <a class="btn primary" href="#experience">View experience</a>
-          <a class="btn" href="#projects">Project demos</a>
+          <a class="btn primary" href="#projects">Project demos</a>
+          <a class="btn" href="#experience">View experience</a>
         </div>
       </div>
       <img class="portrait" src="assets/img/billriz-condor.webp" alt="Portrait of Billriz Condor" width="520" height="520">
@@ -224,132 +240,6 @@
       <div class="fig"><b>4 countries</b><span>France, Hungary, Taiwan and the Philippines</span></div>
     </div>
   </div>
-
-  <section id="experience">
-    <div class="wrap">
-      <div class="sec-head"><div><p class="kicker">Career</p><h2>Experience</h2></div></div>
-      <div class="timeline">
-        <div class="entry">
-          <div class="when"><b>Mar 2026 – Aug 2026</b>Paris, France</div>
-          <div>
-            <h3>Climate Risk Intern</h3>
-            <div class="org">Scientific Climate Ratings <span>(EDHEC Ventures)</span></div>
-            <ul>
-              <li>Performed asset-level physical climate-risk assessments across infrastructure investment portfolios.</li>
-              <li>Integrated and analysed climate-hazard, geospatial, infrastructure and financial datasets to quantify exposure, resilience and financial materiality.</li>
-              <li>Ran data-quality checks and cross-dataset validation to test the robustness of risk outputs.</li>
-              <li>Wrote methodological notes and turned model results into investment-relevant outputs for business audiences.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>Aug 2022 – Jul 2024</b>Cebu, Philippines</div>
-          <div>
-            <h3>MS Graduate Research Fellow</h3>
-            <div class="org">UP Cebu Center for Environmental Informatics</div>
-            <ul>
-              <li>Coordinated a <b>USD 60,000</b> climate-action research project end to end: planning, tracking, documentation and delivery.</li>
-              <li>Supervised and coordinated a team of <b>5</b> technical and administrative staff.</li>
-              <li>Ran environmental, social and economic impact assessments with local stakeholders, and presented results to <b>100+</b> regional government leaders.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>Mar 2021 – Jul 2022</b>Cebu, Philippines</div>
-          <div>
-            <h3>Science Research Specialist I</h3>
-            <div class="org">UP Cebu Center for Environmental Informatics</div>
-            <ul>
-              <li>Managed data collection, fieldwork, analysis and reporting for groundwater and environmental-risk studies.</li>
-              <li>Built GIS monitoring tools and vulnerability maps for contamination risk, seawater intrusion and resource planning.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>Aug 2019 – Jul 2020</b>Tainan, Taiwan</div>
-          <div>
-            <h3>Visiting Researcher</h3>
-            <div class="org">NCKU Energy &amp; Environment Laboratory</div>
-            <ul>
-              <li>Renewable-energy and bioenergy research: experimental design, statistical data analysis and optimisation, leading to <b>2</b> journal papers and <b>3</b> conference presentations.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>Oct 2017 – Mar 2018</b>Philippines</div>
-          <div>
-            <h3>Engineering Intern</h3>
-            <div class="org">Pilipinas Shell <span>/ Shell Foundation</span></div>
-            <ul>
-              <li>Supported operations, safety documentation, logistics and sustainability outreach.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="education">
-    <div class="wrap">
-      <div class="sec-head"><div><p class="kicker">Academic background</p><h2>Education</h2></div></div>
-      <div class="timeline">
-        <div class="entry">
-          <div class="when"><b>2024 – 2026</b>Nantes, France</div>
-          <div>
-            <span class="badge">Master's</span>
-            <h3>Process &amp; Bioprocess Engineering</h3>
-            <div class="org">IMT Atlantique <span>· Erasmus Mundus Joint Master's in Management of Energy &amp; Environment Engineering (ME3)</span></div>
-            <p>Erasmus Mundus Scholarship. Thesis: <i>Quantifying Geospatial Uncertainty in Asset-Level Climate Risk Assessments</i>.</p>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>2024 – 2026</b>Budapest, Hungary</div>
-          <div>
-            <span class="badge">Master's</span>
-            <h3>Mechanical Engineering Modelling</h3>
-            <div class="org">Budapest University of Technology and Economics (BME) <span>· Erasmus Mundus ME3</span></div>
-            <p>System simulation and modelling, including machine-learning digital twins and energy-systems models.</p>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>2018 – 2021</b>Quezon City, Philippines</div>
-          <div>
-            <span class="badge">Master of Science</span>
-            <h3>Energy Engineering</h3>
-            <div class="org">University of the Philippines Diliman</div>
-            <p>ERDT Scholarship. Research on renewable energy and microalgae-based bioethanol.</p>
-          </div>
-        </div>
-        <div class="entry">
-          <div class="when"><b>2013 – 2018</b>Palawan, Philippines</div>
-          <div>
-            <span class="badge">Bachelor of Science</span>
-            <h3>Petroleum Engineering</h3>
-            <div class="org">Palawan State University</div>
-            <p>President's List.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="skills">
-    <div class="wrap">
-      <div class="sec-head"><div><p class="kicker">Capabilities</p><h2>Skills</h2></div></div>
-      <div class="skills">
-        <div class="skill"><h3>Energy systems &amp; process engineering</h3><p>Energy-systems and process models, bioenergy and fuel pathways, techno-economic analysis, life cycle assessment (ISO 14040/44)</p></div>
-        <div class="skill"><h3>Modelling &amp; simulation</h3><p>Statistics, machine learning, uncertainty analysis and system simulation, including digital twins</p></div>
-        <div class="skill"><h3>Climate &amp; environmental risk</h3><p>Hazard, exposure and vulnerability assessment; resilience and financial materiality; hydro-meteorological and water-resource risk</p></div>
-        <div class="skill"><h3>GIS &amp; data</h3><p>QGIS, spatial analysis and vulnerability mapping; multi-source databases; data quality and cross-dataset validation</p></div>
-        <div class="skill"><h3>Impact assessment</h3><p>Environmental, social and economic impact assessment; engagement with local governments and communities</p></div>
-        <div class="skill"><h3>Communication &amp; coordination</h3><p>Scientific writing, decision-maker briefings, project coordination and monitoring, team supervision</p></div>
-      </div>
-      <div class="tools">
-        <span class="lbl">Tools</span>
-        <span class="tool">Python</span><span class="tool">R</span><span class="tool">MATLAB</span><span class="tool">QGIS</span><span class="tool">pandas</span><span class="tool">scikit-learn</span><span class="tool">openLCA</span><span class="tool">ecoinvent</span><span class="tool">Excel</span><span class="tool">JavaScript</span><span class="tool">Git</span>
-      </div>
-    </div>
-  </section>
 
   <section id="projects">
     <div class="wrap">
@@ -422,6 +312,191 @@
     </div>
   </section>
 
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="kicker">Capabilities</p><h2>Skills</h2></div></div>
+      <div class="skills">
+        <div class="skill"><h3>Energy systems &amp; process engineering</h3><p>Energy-systems and process models, bioenergy and fuel pathways, techno-economic analysis, life cycle assessment (ISO 14040/44)</p></div>
+        <div class="skill"><h3>Modelling &amp; simulation</h3><p>Statistics, machine learning, uncertainty analysis and system simulation, including digital twins</p></div>
+        <div class="skill"><h3>Climate &amp; environmental risk</h3><p>Hazard, exposure and vulnerability assessment; resilience and financial materiality; hydro-meteorological and water-resource risk</p></div>
+        <div class="skill"><h3>GIS &amp; data</h3><p>QGIS, spatial analysis and vulnerability mapping; multi-source databases; data quality and cross-dataset validation</p></div>
+        <div class="skill"><h3>Impact assessment</h3><p>Environmental, social and economic impact assessment; engagement with local governments and communities</p></div>
+        <div class="skill"><h3>Communication &amp; coordination</h3><p>Scientific writing, decision-maker briefings, project coordination and monitoring, team supervision</p></div>
+      </div>
+      <div class="tools">
+        <span class="lbl">Tools</span>
+        <span class="tool">Python</span><span class="tool">R</span><span class="tool">MATLAB</span><span class="tool">QGIS</span><span class="tool">pandas</span><span class="tool">scikit-learn</span><span class="tool">openLCA</span><span class="tool">ecoinvent</span><span class="tool">Excel</span><span class="tool">JavaScript</span><span class="tool">Git</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="kicker">Career</p><h2>Experience</h2></div><p>Click an entry to expand the details.</p></div>
+      <div class="tl">
+        <details class="tl-item" open>
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">Mar 2026 – Aug 2026 · Paris, France</span>
+              
+              <h3>Climate Risk Intern</h3>
+              <span class="org">Scientific Climate Ratings <span>(EDHEC Ventures)</span></span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <ul>
+              <li>Performed asset-level physical climate-risk assessments across infrastructure investment portfolios.</li>
+              <li>Integrated and analysed climate-hazard, geospatial, infrastructure and financial datasets to quantify exposure, resilience and financial materiality.</li>
+              <li>Ran data-quality checks and cross-dataset validation to test the robustness of risk outputs.</li>
+              <li>Wrote methodological notes and turned model results into investment-relevant outputs for business audiences.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">Aug 2022 – Jul 2024 · Cebu, Philippines</span>
+              
+              <h3>MS Graduate Research Fellow</h3>
+              <span class="org">UP Cebu Center for Environmental Informatics</span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <ul>
+              <li>Coordinated a <b>USD 60,000</b> climate-action research project end to end: planning, tracking, documentation and delivery.</li>
+              <li>Supervised and coordinated a team of <b>5</b> technical and administrative staff.</li>
+              <li>Ran environmental, social and economic impact assessments with local stakeholders, and presented results to <b>100+</b> regional government leaders.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">Mar 2021 – Jul 2022 · Cebu, Philippines</span>
+              
+              <h3>Science Research Specialist I</h3>
+              <span class="org">UP Cebu Center for Environmental Informatics</span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <ul>
+              <li>Managed data collection, fieldwork, analysis and reporting for groundwater and environmental-risk studies.</li>
+              <li>Built GIS monitoring tools and vulnerability maps for contamination risk, seawater intrusion and resource planning.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">Aug 2019 – Jul 2020 · Tainan, Taiwan</span>
+              
+              <h3>Visiting Researcher</h3>
+              <span class="org">NCKU Energy &amp; Environment Laboratory</span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <ul>
+              <li>Renewable-energy and bioenergy research: experimental design, statistical data analysis and optimisation, leading to <b>2</b> journal papers and <b>3</b> conference presentations.</li>
+            </ul>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">Oct 2017 – Mar 2018 · Philippines</span>
+              
+              <h3>Engineering Intern</h3>
+              <span class="org">Pilipinas Shell <span>/ Shell Foundation</span></span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <ul>
+              <li>Supported operations, safety documentation, logistics and sustainability outreach.</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="education">
+    <div class="wrap">
+      <div class="sec-head"><div><p class="kicker">Academic background</p><h2>Education</h2></div><p>Click an entry to expand the details.</p></div>
+      <div class="tl">
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">2024 – 2026 · Nantes, France</span>
+              <span class="badge">Master's</span>
+              <h3>Process &amp; Bioprocess Engineering</h3>
+              <span class="org">IMT Atlantique <span>· Erasmus Mundus Joint Master's in Management of Energy &amp; Environment Engineering (ME3)</span></span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <p>Erasmus Mundus Scholarship. Thesis: <i>Quantifying Geospatial Uncertainty in Asset-Level Climate Risk Assessments</i>.</p>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">2024 – 2026 · Budapest, Hungary</span>
+              <span class="badge">Master's</span>
+              <h3>Mechanical Engineering Modelling</h3>
+              <span class="org">Budapest University of Technology and Economics (BME) <span>· Erasmus Mundus ME3</span></span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <p>System simulation and modelling, including machine-learning digital twins and energy-systems models.</p>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">2018 – 2021 · Quezon City, Philippines</span>
+              <span class="badge">Master of Science</span>
+              <h3>Energy Engineering</h3>
+              <span class="org">University of the Philippines Diliman</span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <p>ERDT Scholarship. Research on renewable energy and microalgae-based bioethanol.</p>
+          </div>
+        </details>
+        <details class="tl-item">
+          <summary>
+            <span class="tl-dot" aria-hidden="true"></span>
+            <span class="tl-head">
+              <span class="tl-date">2013 – 2018 · Palawan, Philippines</span>
+              <span class="badge">Bachelor of Science</span>
+              <h3>Petroleum Engineering</h3>
+              <span class="org">Palawan State University</span>
+            </span>
+            <span class="tl-chev" aria-hidden="true"></span>
+          </summary>
+          <div class="tl-body">
+            <p>President's List.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
   <section id="publications">
     <div class="wrap">
       <div class="sec-head"><div><p class="kicker">Research</p><h2>Publications</h2></div></div>
@@ -482,6 +557,8 @@
   </footer>
 
   <script>
+    addEventListener('beforeprint', () => document.querySelectorAll('details').forEach((d) => { d.dataset.wasOpen = d.open; d.open = true; }));
+    addEventListener('afterprint', () => document.querySelectorAll('details').forEach((d) => { d.open = d.dataset.wasOpen === 'true'; }));
     document.getElementById('yr').textContent = new Date().getFullYear();
     const root = document.documentElement, btn = document.getElementById('themeBtn');
     try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
